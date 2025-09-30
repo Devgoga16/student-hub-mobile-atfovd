@@ -13,6 +13,7 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { SystemBars } from "react-native-edge-to-edge";
+import React from "react";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -24,6 +25,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
+      console.log('Fonts loaded, hiding splash screen');
       SplashScreen.hideAsync();
     }
   }, [loaded]);
@@ -31,17 +33,21 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   if (!loaded) {
+    console.log('Fonts not loaded yet, showing loading screen');
     return null;
   }
 
+  console.log('Root layout rendered with color scheme:', colorScheme);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={DefaultTheme}>
         <SystemBars style="auto" />
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" options={{ headerShown: true, title: "Page Not Found" }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
