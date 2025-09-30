@@ -47,7 +47,14 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" options={{ headerShown: true, title: "Page Not Found" }} />
+          <Stack.Screen 
+            name="+not-found" 
+            options={{ 
+              headerShown: true, 
+              title: "Oops!",
+              presentation: 'modal'
+            }} 
+          />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

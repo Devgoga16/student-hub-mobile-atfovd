@@ -1,13 +1,23 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, router } from 'expo-router';
 import { Button } from '@/components/button';
 import { IconSymbol } from '@/components/IconSymbol';
 import { colors } from '@/styles/commonStyles';
 
 export default function NotFoundScreen() {
   console.log('404 Not Found screen rendered');
+  
+  const handleGoToLogin = () => {
+    console.log('Navigating to login from 404 page');
+    router.replace('/(auth)/login');
+  };
+
+  const handleGoToDashboard = () => {
+    console.log('Navigating to dashboard from 404 page');
+    router.replace('/(tabs)/dashboard');
+  };
   
   return (
     <>
@@ -20,11 +30,22 @@ export default function NotFoundScreen() {
             The page you're looking for doesn't exist.
           </Text>
           
-          <Link href="/(auth)/login" asChild>
-            <Button style={styles.button}>
+          <View style={styles.buttonContainer}>
+            <Button 
+              style={[styles.button, styles.primaryButton]} 
+              onPress={handleGoToDashboard}
+            >
+              Go to Dashboard
+            </Button>
+            
+            <Button 
+              style={[styles.button, styles.secondaryButton]} 
+              onPress={handleGoToLogin}
+              variant="outline"
+            >
               Go to Login
             </Button>
-          </Link>
+          </View>
         </View>
       </View>
     </>
@@ -58,8 +79,17 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     lineHeight: 22,
   },
+  buttonContainer: {
+    width: '100%',
+    gap: 12,
+  },
   button: {
     width: '100%',
+  },
+  primaryButton: {
     backgroundColor: colors.primary,
+  },
+  secondaryButton: {
+    borderColor: colors.primary,
   },
 });

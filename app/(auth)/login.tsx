@@ -32,8 +32,9 @@ export default function LoginScreen() {
     // Simulate login process
     setTimeout(() => {
       setLoading(false);
-      console.log('Login successful, navigating to main app');
-      router.replace('/(tabs)');
+      console.log('Login successful, navigating to dashboard');
+      // Navigate directly to the dashboard tab instead of the tabs root
+      router.replace('/(tabs)/dashboard');
     }, 1000);
   };
 
