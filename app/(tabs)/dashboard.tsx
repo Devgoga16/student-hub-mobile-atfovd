@@ -1,16 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   Pressable,
+  Alert,
 } from 'react-native';
 import { IconSymbol } from '@/components/IconSymbol';
 import { router } from 'expo-router';
+import { NotificationService } from '@/utils/notificationService';
 
 export default function DashboardScreen() {
+  const [isTestingNotifications, setIsTestingNotifications] = useState(false);
+
   const quickActions = [
     { id: 1, title: 'View Grades', icon: 'chart.bar', route: '/grades' },
     { id: 2, title: 'Class Schedule', icon: 'calendar', route: '/(tabs)/schedules' },
@@ -49,6 +53,73 @@ export default function DashboardScreen() {
     }
   };
 
+  const handleTestNotification = async () => {
+    try {
+      setIsTestingNotifications(true);
+      console.log('Testing basic notification...');
+      await NotificationService.sendTestNotification();
+      Alert.alert(
+        'Test Notification Sent! 📱',
+        'Check your notification panel to see the test notification.',
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('Error testing notification:', error);
+      Alert.alert('Error', 'Failed to send test notification. Please try again.');
+    } finally {
+      setIsTestingNotifications(false);
+    }
+  };
+
+  const handleScheduledNotification = async () => {
+    try {
+      console.log('Testing scheduled notification...');
+      await NotificationService.sendScheduledNotification(
+        'Scheduled Test 🕐',
+        'This notification was scheduled 5 seconds ago!',
+        5
+      );
+      Alert.alert(
+        'Scheduled Notification Set! ⏰',
+        'You will receive a notification in 5 seconds.',
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('Error scheduling notification:', error);
+      Alert.alert('Error', 'Failed to schedule notification. Please try again.');
+    }
+  };
+
+  const handleClassReminder = async () => {
+    try {
+      console.log('Testing class reminder notification...');
+      await NotificationService.sendClassReminder();
+      Alert.alert(
+        'Class Reminder Sent! 🎓',
+        'Check your notifications for the class reminder.',
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('Error sending class reminder:', error);
+      Alert.alert('Error', 'Failed to send class reminder. Please try again.');
+    }
+  };
+
+  const handleAssignmentReminder = async () => {
+    try {
+      console.log('Testing assignment reminder notification...');
+      await NotificationService.sendAssignmentReminder();
+      Alert.alert(
+        'Assignment Reminder Sent! 📝',
+        'Check your notifications for the assignment reminder.',
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('Error sending assignment reminder:', error);
+      Alert.alert('Error', 'Failed to send assignment reminder. Please try again.');
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -71,6 +142,52 @@ export default function DashboardScreen() {
                 <Text style={styles.quickActionText}>{action.title}</Text>
               </Pressable>
             ))}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Notification Testing 🔔</Text>
+          <View style={styles.notificationTestSection}>
+            <Text style={styles.notificationDescription}>
+              Test different types of notifications to ensure they work properly on your device.
+            </Text>
+            
+            <View style={styles.notificationButtonsGrid}>
+              <Pressable
+                style={[styles.notificationButton, styles.primaryButton]}
+                onPress={handleTestNotification}
+                disabled={isTestingNotifications}
+              >
+                <IconSymbol name="bell" size={20} color="#fff" />
+                <Text style={styles.notificationButtonText}>
+                  {isTestingNotifications ? 'Sending...' : 'Test Basic'}
+                </Text>
+              </Pressable>
+
+              <Pressable
+                style={[styles.notificationButton, styles.secondaryButton]}
+                onPress={handleScheduledNotification}
+              >
+                <IconSymbol name="clock" size={20} color="#fff" />
+                <Text style={styles.notificationButtonText}>Scheduled (5s)</Text>
+              </Pressable>
+
+              <Pressable
+                style={[styles.notificationButton, styles.accentButton]}
+                onPress={handleClassReminder}
+              >
+                <IconSymbol name="graduationcap" size={20} color="#fff" />
+                <Text style={styles.notificationButtonText}>Class Reminder</Text>
+              </Pressable>
+
+              <Pressable
+                style={[styles.notificationButton, styles.warningButton]}
+                onPress={handleAssignmentReminder}
+              >
+                <IconSymbol name="doc.text" size={20} color="#fff" />
+                <Text style={styles.notificationButtonText}>Assignment Due</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
 
@@ -178,6 +295,54 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     textAlign: 'center',
     marginTop: 8,
+  },
+  notificationTestSection: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    elevation: 2,
+  },
+  notificationDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  notificationButtonsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  notificationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    padding: 12,
+    width: '48%',
+    marginBottom: 12,
+    minHeight: 48,
+  },
+  primaryButton: {
+    backgroundColor: '#007AFF',
+  },
+  secondaryButton: {
+    backgroundColor: '#5856D6',
+  },
+  accentButton: {
+    backgroundColor: '#34C759',
+  },
+  warningButton: {
+    backgroundColor: '#FF9500',
+  },
+  notificationButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 6,
+    textAlign: 'center',
   },
   announcementCard: {
     backgroundColor: '#fff',
